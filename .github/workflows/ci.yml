@@ -23,6 +23,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - toolset: emscripten
+            cxxstd: 11,14,17,20
+            os: ubuntu-latest
           #------------------
           # Linux, gcc
           #------------------
@@ -438,6 +441,9 @@ jobs:
             ln -s /usr/bin "$GCC_TOOLCHAIN_ROOT/bin"
             mkdir -p "$GCC_TOOLCHAIN_ROOT/lib/gcc/$MULTIARCH_TRIPLET"
             ln -s "/usr/lib/gcc/$MULTIARCH_TRIPLET/${{matrix.gcc_toolchain}}" "$GCC_TOOLCHAIN_ROOT/lib/gcc/$MULTIARCH_TRIPLET/${{matrix.gcc_toolchain}}"
+      - name: Setup emsdk
+        if: matrix.toolset == 'emscripten'
+        uses: mymindstorm/setup-emsdk@master
       - name: Setup Boost
         run: |
             echo GITHUB_REPOSITORY: $GITHUB_REPOSITORY
