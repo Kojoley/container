@@ -542,6 +542,20 @@ jobs:
             fi
             B2_ARGS+=("libs/$LIBRARY/test")
             ./b2 "${B2_ARGS[@]}"
+
+      - name: Install Ninja
+        if: ${{ !startsWith(matrix.toolset, 'msvc') && !matrix.msys }}
+        run: pip install ninja
+
+      - name: Init CMake Build
+        run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container libs/container
+             ${{ contains(matrix.options, 'address-model=32') && (startsWith(matrix.toolset, 'msvc') && '-A Win32' || '-DCMAKE_CXX_FLAGS=-m32') || '' }}
+             ${{ startsWith(matrix.toolset, 'clang-win') && '-DCMAKE_CXX_COMPILER=clang-cl' || '' }}
+             ${{ startsWith(matrix.toolset, 'gcc') && format('-G Ninja -DCMAKE_CXX_COMPILER={0}', matrix.toolset) || '' }}
+
+      - name: CMake Build
+        run: cmake --build .build
+
   windows:
     strategy:
       fail-fast: false
@@ -599,3 +613,16 @@ jobs:
         run: |
             cd ../boost-root
             b2 -j %NUMBER_OF_PROCESSORS% libs/%LIBRARY%/test toolset=${{matrix.toolset}} cxxstd=${{matrix.cxxstd}} address-model=${{matrix.addrmd}} variant=debug,release embed-manifest-via=linker
+
+      - name: Install Ninja
+        if: ${{ !startsWith(matrix.toolset, 'msvc') && !matrix.msys }}
+        run: pip install ninja
+
+      - name: Init CMake Build
+        run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container libs/container
+             ${{ contains(matrix.options, 'address-model=32') && (startsWith(matrix.toolset, 'msvc') && '-A Win32' || '-DCMAKE_CXX_FLAGS=-m32') || '' }}
+             ${{ startsWith(matrix.toolset, 'clang-win') && '-DCMAKE_CXX_COMPILER=clang-cl' || '' }}
+             ${{ startsWith(matrix.toolset, 'gcc') && format('-G Ninja -DCMAKE_CXX_COMPILER={0}', matrix.toolset) || '' }}
+
+      - name: CMake Build
+        run: cmake --build .build

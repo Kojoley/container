@@ -6,6 +6,8 @@ cmake_minimum_required(VERSION 3.5...3.16)
 
 project(boost_container VERSION "${BOOST_SUPERPROJECT_VERSION}" LANGUAGES C CXX)
 
+find_package(Threads REQUIRED)
+
 add_library(boost_container
   src/alloc_lib.c
   src/dlmalloc.cpp
@@ -27,6 +29,7 @@ target_link_libraries(boost_container
     Boost::intrusive
     Boost::move
     Boost::static_assert
+    Threads::Threads
 )
 
 target_compile_definitions(boost_container
