@@ -24,6 +24,7 @@ jobs:
       matrix:
         include:
           - toolset: emscripten
+            compiler: emcc
             cxxstd: 11
             os: ubuntu-latest
           #------------------
@@ -244,7 +245,7 @@ jobs:
       - name: Init CMake Build
         working-directory: ../boost-root
         run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container .
-             ${{ !startsWith(matrix.toolset, 'emscripten') && format('-DCMAKE_CXX_COMPILER={0}', matrix.compiler || matrix.toolset) || '' }}
+             -DCMAKE_CXX_COMPILER=${{ matrix.compiler || matrix.toolset }}
 
       - name: CMake Build
         working-directory: ../boost-root
