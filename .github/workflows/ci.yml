@@ -65,7 +65,7 @@ jobs:
                     else
                         PYTHON_PACKAGE="python"
                     fi
-                    apt-get -o Acquire::Retries=$NET_RETRY_COUNT install -y sudo software-properties-common tzdata wget curl apt-transport-https ca-certificates make build-essential g++ $PYTHON_PACKAGE python3 perl git cmake
+                    apt-get -o Acquire::Retries=$NET_RETRY_COUNT install -y sudo software-properties-common tzdata wget curl apt-transport-https ca-certificates make $PYTHON_PACKAGE python3 perl git cmake
                 fi
             fi
             git config --global pack.threads 0
@@ -241,16 +241,10 @@ jobs:
             B2_ARGS+=("libs/$LIBRARY/test")
             ./b2 "${B2_ARGS[@]}"
 
-      - name: Install Ninja
-        if: ${{ !startsWith(matrix.toolset, 'msvc') && !matrix.msys }}
-        run: pip install ninja
-
       - name: Init CMake Build
         working-directory: ../boost-root
         run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container .
-             ${{ contains(matrix.options, 'address-model=32') && (startsWith(matrix.toolset, 'msvc') && '-A Win32' || '-DCMAKE_CXX_FLAGS=-m32') || '' }}
-             ${{ startsWith(matrix.toolset, 'clang-win') && '-DCMAKE_CXX_COMPILER=clang-cl' || '' }}
-             ${{ startsWith(matrix.toolset, 'gcc') && format('-G Ninja -DCMAKE_CXX_COMPILER={0}', matrix.toolset) || '' }}
+             ${{ !startsWith(matrix.toolset, 'emscripten') && format('-DCMAKE_CXX_COMPILER={0}', matrix.compiler || matrix.toolset) || '' }}
 
       - name: CMake Build
         working-directory: ../boost-root
@@ -315,7 +309,7 @@ jobs:
         working-directory: ../boost-root
         run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container .
              ${{ contains(matrix.options, 'address-model=32') && (startsWith(matrix.toolset, 'msvc') && '-A Win32' || '-DCMAKE_CXX_FLAGS=-m32') || '' }}
-             ${{ startsWith(matrix.toolset, 'clang-win') && '-DCMAKE_CXX_COMPILER=clang-cl' || '' }}
+             ${{ startsWith(matrix.toolset, 'clang-win') && '-T ClangCl' || '' }}
              ${{ startsWith(matrix.toolset, 'gcc') && format('-G Ninja -DCMAKE_CXX_COMPILER={0}', matrix.toolset) || '' }}
 
       - name: CMake Build
