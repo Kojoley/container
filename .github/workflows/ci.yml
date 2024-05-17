@@ -242,9 +242,13 @@ jobs:
             B2_ARGS+=("libs/$LIBRARY/test")
             ./b2 "${B2_ARGS[@]}"
 
+      - name: Install Ninja
+        if: ${{ !startsWith(matrix.toolset, 'msvc') && !matrix.msys }}
+        run: pip install ninja
+
       - name: Init CMake Build
         working-directory: ../boost-root
-        run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container .
+        run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container . -G Ninja
              -DCMAKE_C_COMPILER=${{ matrix.compiler || matrix.toolset }}
              -DCMAKE_CXX_COMPILER=${{ matrix.compiler || matrix.toolset }}
 
