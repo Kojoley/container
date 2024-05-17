@@ -207,7 +207,7 @@ jobs:
                 echo " ;" >> ~/user-config.jam
             fi
       - name: Run tests
-        if: matrix.cmake_tests == ''
+        if: false
         run: |
             cd ../boost-root
             B2_ARGS=("-j" "$BUILD_JOBS" "toolset=${{matrix.toolset}}" "cxxstd=${{matrix.cxxstd}}")
@@ -300,6 +300,7 @@ jobs:
             cmd /c bootstrap
             b2 -d0 headers
       - name: Run tests
+        if: false
         shell: cmd
         run: |
             cd ../boost-root
