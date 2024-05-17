@@ -245,6 +245,7 @@ jobs:
       - name: Init CMake Build
         working-directory: ../boost-root
         run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container .
+             -DCMAKE_C_COMPILER=${{ matrix.compiler || matrix.toolset }}
              -DCMAKE_CXX_COMPILER=${{ matrix.compiler || matrix.toolset }}
 
       - name: CMake Build
@@ -309,9 +310,8 @@ jobs:
       - name: Init CMake Build
         working-directory: ../boost-root
         run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container .
-             ${{ contains(matrix.options, 'address-model=32') && (startsWith(matrix.toolset, 'msvc') && '-A Win32' || '-DCMAKE_CXX_FLAGS=-m32') || '' }}
              ${{ startsWith(matrix.toolset, 'clang-win') && '-T ClangCl' || '' }}
-             ${{ startsWith(matrix.toolset, 'gcc') && format('-G Ninja -DCMAKE_CXX_COMPILER={0}', matrix.toolset) || '' }}
+             ${{ startsWith(matrix.toolset, 'gcc') && format('-G Ninja -DCMAKE_C_COMPILER={0} -DCMAKE_CXX_COMPILER={0}', matrix.toolset) || '' }}
 
       - name: CMake Build
         working-directory: ../boost-root
