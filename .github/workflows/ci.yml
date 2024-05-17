@@ -246,7 +246,8 @@ jobs:
         run: pip install ninja
 
       - name: Init CMake Build
-        run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container libs/container
+        working-directory: ../boost-root/libs/container
+        run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container .
              ${{ contains(matrix.options, 'address-model=32') && (startsWith(matrix.toolset, 'msvc') && '-A Win32' || '-DCMAKE_CXX_FLAGS=-m32') || '' }}
              ${{ startsWith(matrix.toolset, 'clang-win') && '-DCMAKE_CXX_COMPILER=clang-cl' || '' }}
              ${{ startsWith(matrix.toolset, 'gcc') && format('-G Ninja -DCMAKE_CXX_COMPILER={0}', matrix.toolset) || '' }}
@@ -309,7 +310,8 @@ jobs:
         run: pip install ninja
 
       - name: Init CMake Build
-        run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container libs/container
+        working-directory: ../boost-root/libs/container
+        run: cmake -B .build -DBOOST_INCLUDE_LIBRARIES=container .
              ${{ contains(matrix.options, 'address-model=32') && (startsWith(matrix.toolset, 'msvc') && '-A Win32' || '-DCMAKE_CXX_FLAGS=-m32') || '' }}
              ${{ startsWith(matrix.toolset, 'clang-win') && '-DCMAKE_CXX_COMPILER=clang-cl' || '' }}
              ${{ startsWith(matrix.toolset, 'gcc') && format('-G Ninja -DCMAKE_CXX_COMPILER={0}', matrix.toolset) || '' }}
